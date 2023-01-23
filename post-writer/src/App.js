@@ -1,8 +1,10 @@
 /*global chrome*/
 import React, {useState} from "react";
+import ReactDOM from "react-dom";
 import "./App.css";
+import images from "./images";
 
-import { Box, Container, Grid, TextField, Button, Paper } from "@mui/material";
+import { Box, Container, Grid, TextField, Button, Paper, Avatar } from "@mui/material";
 import AutorenewIcon from '@mui/icons-material/Autorenew';
 import { Configuration, OpenAIApi } from "openai";
 
@@ -14,6 +16,13 @@ function App() {
   const configuration = new Configuration({
     apiKey: process.env.REACT_APP_OPENAI_API_KEY,
   });
+
+  const getButtons = () => {
+    return images.map((image) => {
+      return <Button startIcon={<Avatar src={require(`${ image.src }`)}/>}></Button>
+    })
+  }
+
   
   const openai = new OpenAIApi(configuration);
 
@@ -42,7 +51,7 @@ function App() {
           <TextField
             autoFocus
             fullWidth
-            label="Your text"
+            label="What is happening in your post, briefly? "
             variant="outlined"
             multiline
             rows={4}
@@ -52,6 +61,9 @@ function App() {
               setPrompt(e.target.value);
             }}
           />
+          <div>
+          {getButtons()} 
+          </div>
           <Button
            fullWidth
            disableElevation
