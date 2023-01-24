@@ -1,9 +1,7 @@
 /*global chrome*/
-import React, {useMemo, useState} from "react";
-import ReactDOM from "react-dom";
+import React, {useState} from "react";
 import "./App.css";
 import images from "./images";
-import defaultImage from "./images";
 
 
 import { Box, Container, Grid, TextField, Button, Paper, Avatar } from "@mui/material";
@@ -60,7 +58,7 @@ function App() {
           <TextField
             autoFocus
             fullWidth
-            label="What is happening in your post, briefly? "
+            label="Tell me briefly what's happening..."
             variant="outlined"
             multiline
             rows={4}
