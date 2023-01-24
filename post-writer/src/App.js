@@ -1,37 +1,46 @@
 /*global chrome*/
-import React, {useState} from "react";
+import React, {useMemo, useState} from "react";
 import ReactDOM from "react-dom";
 import "./App.css";
 import images from "./images";
+import defaultImage from "./images";
+
 
 import { Box, Container, Grid, TextField, Button, Paper, Avatar } from "@mui/material";
 import AutorenewIcon from '@mui/icons-material/Autorenew';
 import { Configuration, OpenAIApi } from "openai";
 
 function App() {
+  const defaultImage = {
+    id: 0, title: 'Select Social Media', description: 'you Should Explain What your post is about.'
+}
   const [prompt, setPrompt] = useState("");
   const [isLoading, setIsLoading] = useState(false);
   const [response, setResponse] = useState("");
+  const [selectedLogo, setSelectedLogo] = useState(defaultImage);
 
   const configuration = new Configuration({
     apiKey: process.env.REACT_APP_OPENAI_API_KEY,
   });
+  const openai = new OpenAIApi(configuration);
+
 
   const getButtons = () => {
     return images.map((image) => {
-      return <Button startIcon={<Avatar src={require(`${ image.src }`)}/>}></Button>
+      return <Button onClick={() => setSelectedLogo(image)} startIcon={<Avatar src={require(`${ image.src }`)}/>}></Button>
     })
   }
 
-  
-  const openai = new OpenAIApi(configuration);
+  function buildPromt(prompt) {
+    return `Create ${selectedLogo?.description} about ${prompt} based on new trends.`
+  }
 
   async function handleSubmit() {
     setIsLoading(true);
     try {
       const completion = await openai.createCompletion({
         model: "text-davinci-003",
-        prompt: prompt,
+        prompt: buildPromt(prompt),
         max_tokens: 100,
         temperature: 0.7
       });
@@ -45,7 +54,7 @@ function App() {
    
   return (
     <Container>
-      <Box sx={{ width: "100%", mt: 4  }}>
+      <Box sx={{ width: "65%", mt: 4  }}>
         <Grid container>
           <Grid item xs={12}>
           <TextField
@@ -61,14 +70,11 @@ function App() {
               setPrompt(e.target.value);
             }}
           />
-          <div>
           {getButtons()} 
-          </div>
           <Button
-           fullWidth
            disableElevation
            variant="contained"
-           disabled={isLoading}
+           disabled={isLoading || selectedLogo.id == 0}
            onClick={() => handleSubmit()}
            startIcon={
              isLoading && (
@@ -88,14 +94,16 @@ function App() {
              )
            }
           >
-           Submit
+            {selectedLogo.title}
           </Button>
           </Grid>
         </Grid>
-      </Box>
       <Grid item xs={12} sx={{mt:3}}>
-        <Paper sx={{p:3}}>{response}</Paper>
+       { response &&
+          <Paper sx={{ p: 4  }}>{response}</Paper>
+       }
       </Grid>
+      </Box>
     </Container>
   );
 }
