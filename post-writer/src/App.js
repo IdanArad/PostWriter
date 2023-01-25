@@ -7,6 +7,7 @@ import images from "./images";
 import { Box, Container, Grid, TextField, Button, Paper, Avatar } from "@mui/material";
 import AutorenewIcon from '@mui/icons-material/Autorenew';
 import { Configuration, OpenAIApi } from "openai";
+import axios from "axios";
 
 function App() {
   const defaultImage = {
@@ -35,14 +36,34 @@ function App() {
 
   async function handleSubmit() {
     setIsLoading(true);
+    const builtprompt = buildPromt(prompt);
     try {
-      const completion = await openai.createCompletion({
-        model: "text-davinci-003",
-        prompt: buildPromt(prompt),
-        max_tokens: 100,
-        temperature: 0.7
-      });
-      setResponse(completion.data.choices[0].text);
+      // const completion = await openai.createCompletion({
+      //   model: "text-davinci-003",
+      //   prompt: buildPromt(prompt),
+      //   max_tokens: 100,
+      //   temperature: 0.7
+      // });
+      const completion = 
+      await axios.post('https://achzrr77ejdcwzb5tkcy3g3sai0eleli.lambda-url.ap-northeast-1.on.aws/', {
+        headers: {
+          'Origin': '*',
+          'Access-Control-Allow-Origin': '*',
+          'Content-Type': 'application/json',
+          'Access-Control-Allow-Headers': '*',
+        },
+        body: {
+          'prompt': builtprompt
+        }
+      })
+      .then((response) => {
+        console.log(response.data);
+          // Handle data
+      })
+      .catch((error) => {
+        console.log(error);
+      })
+   //   setResponse(completion.data.choices[0].text);
       setIsLoading(false);
     } catch (e) {
       alert("Error: ", e);
@@ -52,7 +73,7 @@ function App() {
    
   return (
     <Container>
-      <Box sx={{ width: "65%", mt: 4  }}>
+      <Box sx={{ width: "61%", mt: 4  }}>
         <Grid container>
           <Grid item xs={12}>
           <TextField
