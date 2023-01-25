@@ -36,7 +36,8 @@ function App() {
 
   async function handleSubmit() {
     setIsLoading(true);
-    const builtprompt = buildPromt(prompt);
+    const builtprompt = await buildPromt(prompt);
+    console.log(builtprompt);
     try {
       // const completion = await openai.createCompletion({
       //   model: "text-davinci-003",
@@ -45,7 +46,7 @@ function App() {
       //   temperature: 0.7
       // });
       const completion = 
-      await axios.post('https://achzrr77ejdcwzb5tkcy3g3sai0eleli.lambda-url.ap-northeast-1.on.aws/', {
+      await axios.post('/', {
         headers: {
           'Origin': '*',
           'Access-Control-Allow-Origin': '*',
@@ -53,18 +54,18 @@ function App() {
           'Access-Control-Allow-Headers': '*',
         },
         body: {
-          'prompt': builtprompt
+          "prompt": builtprompt
         }
       })
       .then((response) => {
         console.log(response.data);
-          // Handle data
+        setResponse(response.data);
+        setIsLoading(false);
       })
       .catch((error) => {
         console.log(error);
       })
-   //   setResponse(completion.data.choices[0].text);
-      setIsLoading(false);
+
     } catch (e) {
       alert("Error: ", e);
       setIsLoading(false);
