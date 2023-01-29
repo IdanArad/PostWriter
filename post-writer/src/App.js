@@ -23,7 +23,6 @@ function App() {
   });
   const openai = new OpenAIApi(configuration);
 
-
   const getButtons = () => {
     return images.map((image) => {
       return <Button onClick={() => setSelectedLogo(image)} startIcon={<Avatar src={require(`${ image.src }`)}/>}></Button>
@@ -31,41 +30,24 @@ function App() {
   }
 
   function buildPromt(prompt) {
-    return `Create ${selectedLogo?.description} about ${prompt} based on new trends.`
+    return `Create ${selectedLogo?.description} about ${prompt} - base the post on ${selectedLogo?.description} trends.`
   }
 
   async function handleSubmit() {
     setIsLoading(true);
     const builtprompt = await buildPromt(prompt);
-    console.log(builtprompt);
     try {
-      // const completion = await openai.createCompletion({
-      //   model: "text-davinci-003",
-      //   prompt: buildPromt(prompt),
-      //   max_tokens: 100,
-      //   temperature: 0.7
-      // });
       const completion = 
-      await axios.post('/', {
-        headers: {
-          'Origin': '*',
-          'Access-Control-Allow-Origin': '*',
-          'Content-Type': 'application/json',
-          'Access-Control-Allow-Headers': '*',
-        },
-        body: {
-          "prompt": builtprompt
-        }
-      })
+      await axios.post('/', null, { params: {
+        builtprompt
+      }})
       .then((response) => {
-        console.log(response.data);
         setResponse(response.data);
         setIsLoading(false);
       })
       .catch((error) => {
         console.log(error);
       })
-
     } catch (e) {
       alert("Error: ", e);
       setIsLoading(false);
@@ -74,7 +56,7 @@ function App() {
    
   return (
     <Container>
-      <Box sx={{ width: "61%", mt: 4  }}>
+      <Box sx={{ width: "63%", mt: 4  }}>
         <Grid container>
           <Grid item xs={12}>
           <TextField
