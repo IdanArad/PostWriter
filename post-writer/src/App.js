@@ -51,7 +51,7 @@ function App() {
     const builtprompt = await buildPromt(prompt);
     try {
       const completion = 
-      await axios.post('/', null, { params: {
+      await axios.post('https://achzrr77ejdcwzb5tkcy3g3sai0eleli.lambda-url.ap-northeast-1.on.aws/', null, { params: {
         builtprompt
       }})
       .then((response) => {
