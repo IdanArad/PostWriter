@@ -1,5 +1,5 @@
 /*global chrome*/
-import React, {useState} from "react";
+import React, {useState, useEffect} from "react";
 import "./App.css";
 import images from "./images";
 
@@ -11,12 +11,25 @@ import axios from "axios";
 
 function App() {
   const defaultImage = {
-    id: 0, title: 'Select Social Media', description: 'you Should Explain What your post is about.'
+    id: 0, title: 'Select', description: 'you Should Explain What your post is about.'
 }
   const [prompt, setPrompt] = useState("");
   const [isLoading, setIsLoading] = useState(false);
   const [response, setResponse] = useState("");
   const [selectedLogo, setSelectedLogo] = useState(defaultImage);
+  
+  useEffect(() => {
+    try {
+      chrome.storage.local.get(null, function (data) {
+        if ("prompt" in data) {
+          setPrompt(data.prompt);
+        }
+      });
+    } catch (e) {
+      console.log("Error due to local state");
+    }
+  }, []);
+
 
   const configuration = new Configuration({
     apiKey: process.env.REACT_APP_OPENAI_API_KEY,
@@ -56,7 +69,7 @@ function App() {
    
   return (
     <Container>
-      <Box sx={{ width: "63%", mt: 4  }}>
+      <Box sx={{ width: "77%", mt: 4  }}>
         <Grid container>
           <Grid item xs={12}>
           <TextField
@@ -70,9 +83,16 @@ function App() {
             value={prompt}
             onChange={(e) => {
               setPrompt(e.target.value);
+              chrome.storage.local.set({ prompt: e.target.value }); 
             }}
           />
+          <Box sx={{ width: "100%", mt: 2  }}>
           {getButtons()} 
+          </Box>
+          <Box sx={{ width: "100%", mt: 4  }}
+          display="flex"
+          justifyContent="center"
+          alignItems="center">
           <Button
            disableElevation
            variant="contained"
@@ -98,6 +118,8 @@ function App() {
           >
             {selectedLogo.title}
           </Button>
+          </Box>
+          
           </Grid>
         </Grid>
       <Grid item xs={12} sx={{mt:3}}>

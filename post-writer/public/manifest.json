@@ -3,6 +3,7 @@
     "name": "Post-Writer",
     "description": "The finest post will be written for you using this Chrome Extension.",
     "version": "1.0.0",
+    "author": "Idan Arad",
     "action": {
         "default_popup": "index.html",
         "default_title": "Open the popup"
