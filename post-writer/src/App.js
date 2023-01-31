@@ -75,7 +75,7 @@ function App() {
           <TextField
             autoFocus
             fullWidth
-            label="Tell me briefly what's happening..."
+            label="Tell me briefly what's happening, I'll generate for you..."
             variant="outlined"
             multiline
             rows={4}
